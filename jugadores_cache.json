@@ -1,0 +1,162 @@
+{
+  "Erling Haaland": {
+    "posicion": "Delantero",
+    "edad": 23,
+    "equipo": "Manchester City",
+    "intensidad_base": 88,
+    "propension_tarjetas": "Baja",
+    "lesiones_previas": 2
+  },
+  "Kevin De Bruyne": {
+    "posicion": "Mediocampista",
+    "edad": 32,
+    "equipo": "Manchester City",
+    "intensidad_base": 82,
+    "propension_tarjetas": "Baja",
+    "lesiones_previas": 3
+  },
+  "Phil Foden": {
+    "posicion": "Mediocampista",
+    "edad": 23,
+    "equipo": "Manchester City",
+    "intensidad_base": 84,
+    "propension_tarjetas": "Baja",
+    "lesiones_previas": 1
+  },
+  "Rodri": {
+    "posicion": "Mediocampista",
+    "edad": 27,
+    "equipo": "Manchester City",
+    "intensidad_base": 80,
+    "propension_tarjetas": "Media",
+    "lesiones_previas": 0
+  },
+  "Kyle Walker": {
+    "posicion": "Lateral",
+    "edad": 33,
+    "equipo": "Manchester City",
+    "intensidad_base": 86,
+    "propension_tarjetas": "Media",
+    "lesiones_previas": 3
+  },
+  "Ruben Dias": {
+    "posicion": "Defensa Central",
+    "edad": 26,
+    "equipo": "Manchester City",
+    "intensidad_base": 76,
+    "propension_tarjetas": "Baja",
+    "lesiones_previas": 1
+  },
+  "Mohamed Salah": {
+    "posicion": "Delantero",
+    "edad": 31,
+    "equipo": "Liverpool",
+    "intensidad_base": 86,
+    "propension_tarjetas": "Baja",
+    "lesiones_previas": 1
+  },
+  "Virgil van Dijk": {
+    "posicion": "Defensa Central",
+    "edad": 32,
+    "equipo": "Liverpool",
+    "intensidad_base": 76,
+    "propension_tarjetas": "Baja",
+    "lesiones_previas": 2
+  },
+  "Darwin Nunez": {
+    "posicion": "Delantero",
+    "edad": 24,
+    "equipo": "Liverpool",
+    "intensidad_base": 85,
+    "propension_tarjetas": "Alta",
+    "lesiones_previas": 1
+  },
+  "Bukayo Saka": {
+    "posicion": "Delantero",
+    "edad": 22,
+    "equipo": "Arsenal",
+    "intensidad_base": 86,
+    "propension_tarjetas": "Baja",
+    "lesiones_previas": 1
+  },
+  "Declan Rice": {
+    "posicion": "Mediocampista",
+    "edad": 25,
+    "equipo": "Arsenal",
+    "intensidad_base": 82,
+    "propension_tarjetas": "Media",
+    "lesiones_previas": 0
+  },
+  "Vinicius Jr": {
+    "posicion": "Delantero",
+    "edad": 23,
+    "equipo": "Real Madrid",
+    "intensidad_base": 88,
+    "propension_tarjetas": "Media",
+    "lesiones_previas": 2
+  },
+  "Jude Bellingham": {
+    "posicion": "Mediocampista",
+    "edad": 20,
+    "equipo": "Real Madrid",
+    "intensidad_base": 84,
+    "propension_tarjetas": "Media",
+    "lesiones_previas": 0
+  },
+  "Kylian Mbappe": {
+    "posicion": "Delantero",
+    "edad": 25,
+    "equipo": "Real Madrid",
+    "intensidad_base": 90,
+    "propension_tarjetas": "Baja",
+    "lesiones_previas": 1
+  },
+  "Robert Lewandowski": {
+    "posicion": "Delantero",
+    "edad": 35,
+    "equipo": "Barcelona",
+    "intensidad_base": 82,
+    "propension_tarjetas": "Baja",
+    "lesiones_previas": 1
+  },
+  "Lamine Yamal": {
+    "posicion": "Delantero",
+    "edad": 16,
+    "equipo": "Barcelona",
+    "intensidad_base": 84,
+    "propension_tarjetas": "Baja",
+    "lesiones_previas": 0
+  },
+  "Lautaro Martinez": {
+    "posicion": "Delantero",
+    "edad": 26,
+    "equipo": "Inter Milan",
+    "intensidad_base": 86,
+    "propension_tarjetas": "Media",
+    "lesiones_previas": 1
+  },
+  "Rafael Leao": {
+    "posicion": "Delantero",
+    "edad": 24,
+    "equipo": "AC Milan",
+    "intensidad_base": 87,
+    "propension_tarjetas": "Media",
+    "lesiones_previas": 1
+  },
+  "Harry Kane": {
+    "posicion": "Delantero",
+    "edad": 30,
+    "equipo": "Bayern Munich",
+    "intensidad_base": 84,
+    "propension_tarjetas": "Baja",
+    "lesiones_previas": 1
+  },
+  "Jamal Musiala": {
+    "posicion": "Mediocampista",
+    "edad": 21,
+    "equipo": "Bayern Munich",
+    "intensidad_base": 83,
+    "propension_tarjetas": "Baja",
+    "lesiones_previas": 1
+  }
+}
