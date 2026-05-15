@@ -167,5 +167,18 @@
     "xG_visitante": 1.9,
     "resultado_real": null,
     "acertado": null
+  },
+  {
+    "id": 14,
+    "fecha": "2026-05-14 20:52:08",
+    "local": "Manchester City",
+    "visitante": "Liverpool",
+    "prob_local": 50.8,
+    "prob_empate": 0.0,
+    "prob_visitante": 49.2,
+    "xG_local": 2.1,
+    "xG_visitante": 1.9,
+    "resultado_real": null,
+    "acertado": null
   }
 ]

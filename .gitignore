@@ -1,1 +1,18 @@
+# Python
+__pycache__/
+*.pyc
 .env
+venv/
+*.pyc
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Cachés locales (no subir a producción)
+jugadores_cache.json
+ultima_actualizacion.txt
+historial_predicciones.json
+
+# IDE
+.vscode/
+.idea/
