@@ -847,5 +847,10 @@ with tab5:
 # ============================================================
 # FOOTER
 # ============================================================
+# Forzar badge PRO si la API Key existe
+if API_KEY and API_KEY != "None":
+    st.success("✅ **MODO PRO ACTIVADO** - Datos en tiempo real desde API-Football")
+else:
+    st.info("📊 **MODO DEMO** - Datos simulados")
 st.divider()
 st.caption(f"🕒 A.R.E.S. - Advanced Real-time Evaluation System | Actualizado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | {liga_seleccionada}")
