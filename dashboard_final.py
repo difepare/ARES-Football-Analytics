@@ -34,7 +34,6 @@ API_HOST = "v3.football.api-sports.io"
 
 # Archivos de caché
 CACHE_JUGADORES_FILE = "jugadores_cache.json"
-CACHE_ACTUALIZACION_FILE = "ultima_actualizacion.txt"
 HISTORIAL_FILE = "historial_predicciones.json"
 
 # ============================================================
@@ -67,6 +66,105 @@ EQUIPOS_POR_LIGA = {
 }
 
 # ============================================================
+# LOGOS DE EQUIPOS
+# ============================================================
+LOGOS_EQUIPOS = {
+    # Premier League
+    "Manchester City": "https://media.api-sports.io/football/teams/50.png",
+    "Liverpool": "https://media.api-sports.io/football/teams/40.png",
+    "Arsenal": "https://media.api-sports.io/football/teams/42.png",
+    "Chelsea": "https://media.api-sports.io/football/teams/49.png",
+    "Manchester United": "https://media.api-sports.io/football/teams/33.png",
+    "Tottenham": "https://media.api-sports.io/football/teams/47.png",
+    "Newcastle United": "https://media.api-sports.io/football/teams/34.png",
+    "Aston Villa": "https://media.api-sports.io/football/teams/66.png",
+    "West Ham United": "https://media.api-sports.io/football/teams/48.png",
+    "Leicester City": "https://media.api-sports.io/football/teams/46.png",
+    "Everton": "https://media.api-sports.io/football/teams/45.png",
+    "Crystal Palace": "https://media.api-sports.io/football/teams/52.png",
+    "Wolves": "https://media.api-sports.io/football/teams/39.png",
+    "Bournemouth": "https://media.api-sports.io/football/teams/35.png",
+    "Fulham": "https://media.api-sports.io/football/teams/36.png",
+    "Brentford": "https://media.api-sports.io/football/teams/55.png",
+    "Brighton": "https://media.api-sports.io/football/teams/51.png",
+    "Nottingham Forest": "https://media.api-sports.io/football/teams/65.png",
+    "Southampton": "https://media.api-sports.io/football/teams/41.png",
+    "Ipswich Town": "https://media.api-sports.io/football/teams/62.png",
+    # La Liga
+    "Real Madrid": "https://media.api-sports.io/football/teams/541.png",
+    "Barcelona": "https://media.api-sports.io/football/teams/529.png",
+    "Atletico Madrid": "https://media.api-sports.io/football/teams/530.png",
+    "Sevilla": "https://media.api-sports.io/football/teams/536.png",
+    "Real Sociedad": "https://media.api-sports.io/football/teams/539.png",
+    "Villarreal": "https://media.api-sports.io/football/teams/542.png",
+    "Athletic Bilbao": "https://media.api-sports.io/football/teams/531.png",
+    "Real Betis": "https://media.api-sports.io/football/teams/543.png",
+    "Valencia": "https://media.api-sports.io/football/teams/540.png",
+    # Champions League
+    "Bayern Munich": "https://media.api-sports.io/football/teams/157.png",
+    "Paris Saint-Germain": "https://media.api-sports.io/football/teams/85.png",
+    "Inter Milan": "https://media.api-sports.io/football/teams/505.png",
+    "AC Milan": "https://media.api-sports.io/football/teams/489.png",
+    "Borussia Dortmund": "https://media.api-sports.io/football/teams/163.png",
+    "Napoli": "https://media.api-sports.io/football/teams/492.png",
+}
+
+def mostrar_logo_html(equipo):
+    """Retorna HTML para mostrar el logo del equipo"""
+    url_logo = LOGOS_EQUIPOS.get(equipo)
+    if url_logo:
+        return f'<img src="{url_logo}" width="60" style="border-radius: 50%; margin-right: 10px;">'
+    return '<span>⚽</span>'
+
+# ============================================================
+# FORMACIONES TÁCTICAS
+# ============================================================
+FORMACIONES = {
+    "4-3-3": {
+        "descripcion": "Ataque por bandas, presión alta en campo rival",
+        "recomendacion": "Ideal contra equipos que defienden en bloque bajo",
+        "fortaleza": "Ataque por las bandas",
+        "debilidad": "Vulnerable al contragolpe",
+        "diagrama": "    DC   DC   DC\n   MC   MC   MC\n   EI   DC   ED"
+    },
+    "4-4-2": {
+        "descripcion": "Equilibrio defensivo, doble pivote en el centro",
+        "recomendacion": "Recomendado contra equipos con juego aéreo",
+        "fortaleza": "Solidez defensiva",
+        "debilidad": "Menos creatividad ofensiva",
+        "diagrama": "   DC   DC   DC   DC\n   MC   MC   MC   MC\n       DC   DC"
+    },
+    "4-5-1": {
+        "descripcion": "Control del mediocampo, defensiva muy sólida",
+        "recomendacion": "Para partidos donde se necesita proteger resultado",
+        "fortaleza": "Control del medio campo",
+        "debilidad": "Ataque limitado",
+        "diagrama": "   DC   DC   DC   DC\n MC   MC   MC   MC   MC\n           DC"
+    },
+    "3-5-2": {
+        "descripcion": "Ataque por carrileros, superioridad numérica en medio",
+        "recomendacion": "Ideal contra equipos con línea defensiva de 4",
+        "fortaleza": "Superioridad en mediocampo",
+        "debilidad": "Defensa de 3 centrales vulnerable",
+        "diagrama": "       DC   DC   DC\n   MC   MC   MC   MC   MC\n       DC   DC"
+    }
+}
+
+def recomendar_formacion(equipo_local, equipo_visitante):
+    """Recomienda formación basada en la fuerza relativa de los equipos"""
+    equipos_muy_ofensivos = ["Manchester City", "Real Madrid", "Bayern Munich", "Barcelona", "Liverpool"]
+    equipos_defensivos = ["Atletico Madrid", "Chelsea", "Inter Milan"]
+    
+    if equipo_local in equipos_muy_ofensivos:
+        return "4-3-3"
+    elif equipo_visitante in equipos_muy_ofensivos:
+        return "4-5-1"
+    elif equipo_local in equipos_defensivos or equipo_visitante in equipos_defensivos:
+        return "4-4-2"
+    else:
+        return "3-5-2"
+
+# ============================================================
 # CLASES BASE
 # ============================================================
 class Posicion(Enum):
@@ -94,66 +192,6 @@ class EstadisticasJugador:
         self.historial_lesiones = lesiones
         self.sprints_por_partido = sprints
         self.dias_descanso_ultimo = descanso
-
-# ============================================================
-# LOGOS DE EQUIPOS
-# ============================================================
-LOGOS_EQUIPOS = {
-    "Manchester City": "https://media.api-sports.io/football/teams/50.png",
-    "Liverpool": "https://media.api-sports.io/football/teams/40.png",
-    "Arsenal": "https://media.api-sports.io/football/teams/42.png",
-    "Chelsea": "https://media.api-sports.io/football/teams/49.png",
-    "Manchester United": "https://media.api-sports.io/football/teams/33.png",
-    "Tottenham": "https://media.api-sports.io/football/teams/47.png",
-    "Newcastle": "https://media.api-sports.io/football/teams/34.png",
-    "Aston Villa": "https://media.api-sports.io/football/teams/66.png",
-    "Real Madrid": "https://media.api-sports.io/football/teams/541.png",
-    "Barcelona": "https://media.api-sports.io/football/teams/529.png",
-    "Bayern Munich": "https://media.api-sports.io/football/teams/157.png",
-    "Paris Saint-Germain": "https://media.api-sports.io/football/teams/85.png",
-    "Inter Milan": "https://media.api-sports.io/football/teams/505.png",
-}
-
-def mostrar_logo_html(equipo):
-    url_logo = LOGOS_EQUIPOS.get(equipo)
-    if url_logo:
-        return f'<img src="{url_logo}" width="50" style="border-radius: 50%; margin-right: 10px;">'
-    return ""
-
-# ============================================================
-# FORMACIONES TÁCTICAS
-# ============================================================
-FORMACIONES = {
-    "4-3-3": {
-        "descripcion": "Ataque por bandas, presión alta",
-        "recomendacion": "Ideal contra equipos que defienden en bloque bajo",
-        "fortaleza": "Ataque",
-    },
-    "4-4-2": {
-        "descripcion": "Equilibrio defensivo, doble pivote",
-        "recomendacion": "Recomendado contra equipos con juego aéreo",
-        "fortaleza": "Defensa",
-    },
-    "4-5-1": {
-        "descripcion": "Control del mediocampo, defensiva sólida",
-        "recomendacion": "Para partidos donde se necesita proteger resultado",
-        "fortaleza": "Control",
-    },
-    "3-5-2": {
-        "descripcion": "Ataque por carrileros, superioridad en medio",
-        "recomendacion": "Ideal contra equipos con línea de 4",
-        "fortaleza": "Mediocampo",
-    }
-}
-
-def recomendar_formacion(equipo_local, equipo_visitante):
-    equipos_fuertes = ["Manchester City", "Liverpool", "Real Madrid", "Bayern Munich"]
-    if equipo_local in equipos_fuertes:
-        return "4-3-3"
-    elif equipo_visitante in equipos_fuertes:
-        return "4-5-1"
-    else:
-        return "4-4-2"
 
 # ============================================================
 # MÓDULO DE FATIGA
@@ -201,16 +239,16 @@ class ModuloFatiga:
         
         if probabilidad >= 0.65:
             nivel = NivelRiesgo.CRITICO
-            sugerencia = "Sustitución inmediata - riesgo muy alto"
+            sugerencia = "🚨 SUSTITUCIÓN INMEDIATA - Riesgo de lesión muy alto"
         elif probabilidad >= 0.45:
             nivel = NivelRiesgo.ALTO
-            sugerencia = "Riesgo alto - preparar sustituto"
+            sugerencia = "⚠️ Riesgo alto - Preparar sustituto"
         elif probabilidad >= 0.25:
             nivel = NivelRiesgo.MODERADO
-            sugerencia = "Fatiga moderada - reducir intensidad"
+            sugerencia = "📊 Fatiga moderada - Reducir intensidad"
         else:
             nivel = NivelRiesgo.BAJO
-            sugerencia = "Condición óptima"
+            sugerencia = "✅ Condición óptima - Puede continuar"
         
         return {"nivel": nivel, "probabilidad": round(probabilidad * 100, 1), "sugerencia": sugerencia}
 
@@ -245,13 +283,13 @@ class SistemaTarjetas:
         
         if probabilidad >= 0.5:
             nivel = "Alto 🔴"
-            sugerencia = "Riesgo alto de tarjeta"
+            sugerencia = "Riesgo alto de tarjeta amarilla - Evitar entradas fuertes"
         elif probabilidad >= 0.3:
             nivel = "Medio 🟡"
-            sugerencia = "Riesgo moderado"
+            sugerencia = "Riesgo moderado - Cuidado con faltas tontas"
         else:
             nivel = "Bajo 🟢"
-            sugerencia = "Riesgo bajo"
+            sugerencia = "Riesgo bajo - Jugar con normalidad"
         
         return {"probabilidad": round(probabilidad * 100, 1), "nivel": nivel, "sugerencia": sugerencia}
     
@@ -259,6 +297,8 @@ class SistemaTarjetas:
         prob_base = 0.08
         if amarillas >= 1:
             prob_base += 0.15
+        if amarillas >= 2:
+            prob_base += 0.25
         
         if propension == "Alta":
             prob_base *= 1.5
@@ -270,13 +310,13 @@ class SistemaTarjetas:
         
         if probabilidad >= 0.2:
             nivel = "Alto 🔴"
-            sugerencia = "Riesgo significativo de expulsión"
+            sugerencia = "Riesgo significativo de expulsión - Extremar precaución"
         elif probabilidad >= 0.1:
             nivel = "Medio 🟡"
-            sugerencia = "Riesgo moderado"
+            sugerencia = "Riesgo moderado de tarjeta roja"
         else:
             nivel = "Bajo 🟢"
-            sugerencia = "Riesgo bajo"
+            sugerencia = "Riesgo bajo de expulsión"
         
         return {"probabilidad": round(probabilidad * 100, 1), "nivel": nivel, "sugerencia": sugerencia}
 
@@ -287,43 +327,77 @@ sistema_tarjetas = SistemaTarjetas()
 # ============================================================
 def predecir_partido(local, visitante):
     equipos_data = {
-        "Manchester City": {"fuerza": 92, "posesion": 62, "xG": 2.1, "forma": "Excelente 🔥"},
-        "Liverpool": {"fuerza": 88, "posesion": 58, "xG": 1.9, "forma": "Buena 📈"},
-        "Arsenal": {"fuerza": 84, "posesion": 55, "xG": 1.8, "forma": "Buena 📈"},
-        "Chelsea": {"fuerza": 78, "posesion": 52, "xG": 1.6, "forma": "Regular 📊"},
-        "Real Madrid": {"fuerza": 90, "posesion": 56, "xG": 2.0, "forma": "Excelente 🔥"},
-        "Barcelona": {"fuerza": 85, "posesion": 64, "xG": 2.2, "forma": "Buena 📈"},
-        "Bayern Munich": {"fuerza": 89, "posesion": 60, "xG": 2.1, "forma": "Excelente 🔥"},
+        "Manchester City": {"fuerza": 92, "posesion": 62, "xG": 2.1, "forma": "Excelente 🔥", "goles_favor": 2.4, "goles_contra": 0.8},
+        "Liverpool": {"fuerza": 88, "posesion": 58, "xG": 1.9, "forma": "Buena 📈", "goles_favor": 2.0, "goles_contra": 1.0},
+        "Arsenal": {"fuerza": 86, "posesion": 56, "xG": 1.8, "forma": "Buena 📈", "goles_favor": 1.9, "goles_contra": 0.9},
+        "Chelsea": {"fuerza": 78, "posesion": 52, "xG": 1.6, "forma": "Regular 📊", "goles_favor": 1.7, "goles_contra": 1.2},
+        "Manchester United": {"fuerza": 76, "posesion": 50, "xG": 1.5, "forma": "Regular 📊", "goles_favor": 1.5, "goles_contra": 1.3},
+        "Tottenham": {"fuerza": 80, "posesion": 54, "xG": 1.7, "forma": "Buena 📈", "goles_favor": 1.8, "goles_contra": 1.1},
+        "Newcastle United": {"fuerza": 82, "posesion": 53, "xG": 1.7, "forma": "Buena 📈", "goles_favor": 1.9, "goles_contra": 1.0},
+        "Aston Villa": {"fuerza": 79, "posesion": 51, "xG": 1.6, "forma": "Buena 📈", "goles_favor": 1.7, "goles_contra": 1.1},
+        "Real Madrid": {"fuerza": 91, "posesion": 57, "xG": 2.0, "forma": "Excelente 🔥", "goles_favor": 2.2, "goles_contra": 0.9},
+        "Barcelona": {"fuerza": 87, "posesion": 64, "xG": 2.2, "forma": "Excelente 🔥", "goles_favor": 2.3, "goles_contra": 1.0},
+        "Bayern Munich": {"fuerza": 89, "posesion": 60, "xG": 2.1, "forma": "Excelente 🔥", "goles_favor": 2.5, "goles_contra": 0.9},
+        "Paris Saint-Germain": {"fuerza": 86, "posesion": 59, "xG": 2.0, "forma": "Buena 📈", "goles_favor": 2.1, "goles_contra": 1.0},
+        "Inter Milan": {"fuerza": 84, "posesion": 54, "xG": 1.8, "forma": "Buena 📈", "goles_favor": 1.9, "goles_contra": 0.9},
+        "AC Milan": {"fuerza": 81, "posesion": 53, "xG": 1.7, "forma": "Buena 📈", "goles_favor": 1.8, "goles_contra": 1.1},
     }
     
-    data_local = equipos_data.get(local, {"fuerza": 80, "posesion": 50, "xG": 1.6, "forma": "Regular 📊"})
-    data_visit = equipos_data.get(visitante, {"fuerza": 75, "posesion": 48, "xG": 1.4, "forma": "Regular 📊"})
+    data_local = equipos_data.get(local, {"fuerza": 80, "posesion": 50, "xG": 1.6, "forma": "Regular 📊", "goles_favor": 1.6, "goles_contra": 1.2})
+    data_visit = equipos_data.get(visitante, {"fuerza": 75, "posesion": 48, "xG": 1.4, "forma": "Regular 📊", "goles_favor": 1.4, "goles_contra": 1.3})
     
     total = data_local["fuerza"] + data_visit["fuerza"]
     prob_local = (data_local["fuerza"] / total) * 0.7 + 0.15
     prob_visit = (data_visit["fuerza"] / total) * 0.7 + 0.15
     prob_empate = 1 - prob_local - prob_visit
     
+    # Calcular xG ajustado
+    xG_local = data_local["xG"] * (1 + (prob_local - 0.33) * 0.5)
+    xG_visitante = data_visit["xG"] * (1 + (prob_visit - 0.33) * 0.3)
+    
+    # Confluencia de victoria
     factores = []
-    if prob_local > 55:
-        factores.append(f"✅ Mayor probabilidad de victoria local")
+    if data_local["fuerza"] > data_visit["fuerza"] + 5:
+        factores.append(f"✅ Mayor fuerza del equipo local ({data_local['fuerza']} vs {data_visit['fuerza']})")
     if data_local["posesion"] > 55:
         factores.append(f"⚡ Alta posesión local ({data_local['posesion']}%)")
+    if data_local["goles_favor"] > data_visit["goles_contra"] + 0.5:
+        factores.append(f"🎯 Ataque local superior ({data_local['goles_favor']} goles/partido)")
+    if "Excelente" in data_local["forma"] and "Mala" not in data_visit["forma"]:
+        factores.append(f"📈 Mejor momento de forma del local")
+    
+    confluencia_activada = len(factores) >= 2
+    
+    if confluencia_activada:
+        sugerencia_confluencia = "💡 PRESIONAR DESDE EL INICIO - Aprovechar las debilidades del rival"
+    elif len(factores) == 1:
+        sugerencia_confluencia = "📊 Ventaja parcial - Consolidar en los primeros 20 minutos"
+    else:
+        sugerencia_confluencia = "🔍 Partido equilibrado - Esperar señales de debilidad"
+    
+    # Recomendación
+    if prob_local > 60 and confluencia_activada:
+        recomendacion = "🔥 FUERTE FAVORITO LOCAL - Valor en victoria local"
+    elif prob_local > 55:
+        recomendacion = "📈 FAVORITO LOCAL - Considerar over 2.5 goles"
+    elif prob_local < 35:
+        recomendacion = "⚠️ POSIBLE SORPRESA - Valor en visitante o doble oportunidad"
+    else:
+        recomendacion = "🤔 PARTIDO EQUILIBRADO - Mejor opción: over 1.5 goles"
     
     return {
         'equipo_local': local, 'equipo_visitante': visitante,
-        'xG_local': data_local["xG"], 'xG_visitante': data_visit["xG"],
+        'xG_local': round(xG_local, 2), 'xG_visitante': round(xG_visitante, 2),
         'prob_local': round(prob_local * 100, 1),
         'prob_empate': round(prob_empate * 100, 1),
         'prob_visitante': round(prob_visit * 100, 1),
         'forma_local': data_local["forma"], 'forma_visitante': data_visit["forma"],
         'posesion_local': data_local["posesion"], 'posesion_visitante': data_visit["posesion"],
-        'confluencia': {
-            'activada': len(factores) >= 2,
-            'factores': factores,
-            'sugerencia': '💡 Presionar desde el inicio' if len(factores) >= 2 else '🔍 Partido equilibrado'
-        },
-        'recomendacion': '🔥 Victoria local con alta confianza' if prob_local > 60 else '📈 Favorito local',
+        'goles_favor_local': data_local["goles_favor"], 'goles_contra_local': data_local["goles_contra"],
+        'goles_favor_visitante': data_visit["goles_favor"], 'goles_contra_visitante': data_visit["goles_contra"],
+        'fuerza_local': data_local["fuerza"], 'fuerza_visitante': data_visit["fuerza"],
+        'confluencia': {'activada': confluencia_activada, 'factores': factores, 'sugerencia': sugerencia_confluencia},
+        'recomendacion': recomendacion,
         'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         'datos_reales': False
     }
@@ -363,6 +437,7 @@ def generar_pdf_informe(prediccion):
     story.append(Paragraph("A.R.E.S. - Informe de Análisis Deportivo", titulo_style))
     story.append(Spacer(1, 20))
     story.append(Paragraph(f"<b>Partido:</b> {prediccion['equipo_local']} vs {prediccion['equipo_visitante']}", styles['Normal']))
+    story.append(Paragraph(f"<b>Fecha análisis:</b> {prediccion['timestamp']}", styles['Normal']))
     story.append(Spacer(1, 20))
     
     data = [
@@ -370,6 +445,9 @@ def generar_pdf_informe(prediccion):
         ['Probabilidad Victoria', f"{prediccion['prob_local']}%", f"{prediccion['prob_visitante']}%"],
         ['Goles Esperados (xG)', str(prediccion['xG_local']), str(prediccion['xG_visitante'])],
         ['Forma', prediccion['forma_local'], prediccion['forma_visitante']],
+        ['Posesión Media', f"{prediccion['posesion_local']}%", f"{prediccion['posesion_visitante']}%"],
+        ['Goles Favor', str(prediccion['goles_favor_local']), str(prediccion['goles_favor_visitante'])],
+        ['Goles Contra', str(prediccion['goles_contra_local']), str(prediccion['goles_contra_visitante'])],
     ]
     
     table = Table(data, colWidths=[2*inch, 1.5*inch, 1.5*inch])
@@ -380,6 +458,13 @@ def generar_pdf_informe(prediccion):
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
     story.append(table)
+    story.append(Spacer(1, 20))
+    story.append(Paragraph(f"<b>Recomendación:</b> {prediccion['recomendacion']}", styles['Normal']))
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("<b>Señales de Acción:</b>", styles['Normal']))
+    for factor in prediccion['confluencia']['factores']:
+        story.append(Paragraph(f"• {factor}", styles['Normal']))
+    
     doc.build(story)
     pdf_buffer.seek(0)
     return pdf_buffer
@@ -390,8 +475,16 @@ def generar_pdf_informe(prediccion):
 JUGADORES_BASE = {
     "Erling Haaland": {"posicion": "Delantero", "edad": 23, "equipo": "Manchester City", "intensidad_base": 88, "propension_tarjetas": "Baja", "lesiones_previas": 2},
     "Kevin De Bruyne": {"posicion": "Mediocampista", "edad": 32, "equipo": "Manchester City", "intensidad_base": 82, "propension_tarjetas": "Baja", "lesiones_previas": 3},
+    "Phil Foden": {"posicion": "Mediocampista", "edad": 23, "equipo": "Manchester City", "intensidad_base": 84, "propension_tarjetas": "Baja", "lesiones_previas": 1},
     "Mohamed Salah": {"posicion": "Delantero", "edad": 31, "equipo": "Liverpool", "intensidad_base": 86, "propension_tarjetas": "Baja", "lesiones_previas": 1},
+    "Virgil van Dijk": {"posicion": "Defensa Central", "edad": 32, "equipo": "Liverpool", "intensidad_base": 76, "propension_tarjetas": "Baja", "lesiones_previas": 2},
+    "Bukayo Saka": {"posicion": "Delantero", "edad": 22, "equipo": "Arsenal", "intensidad_base": 86, "propension_tarjetas": "Baja", "lesiones_previas": 1},
     "Vinicius Jr": {"posicion": "Delantero", "edad": 23, "equipo": "Real Madrid", "intensidad_base": 88, "propension_tarjetas": "Media", "lesiones_previas": 2},
+    "Jude Bellingham": {"posicion": "Mediocampista", "edad": 20, "equipo": "Real Madrid", "intensidad_base": 84, "propension_tarjetas": "Media", "lesiones_previas": 0},
+    "Kylian Mbappe": {"posicion": "Delantero", "edad": 25, "equipo": "Real Madrid", "intensidad_base": 90, "propension_tarjetas": "Baja", "lesiones_previas": 1},
+    "Robert Lewandowski": {"posicion": "Delantero", "edad": 35, "equipo": "Barcelona", "intensidad_base": 82, "propension_tarjetas": "Baja", "lesiones_previas": 1},
+    "Harry Kane": {"posicion": "Delantero", "edad": 30, "equipo": "Bayern Munich", "intensidad_base": 84, "propension_tarjetas": "Baja", "lesiones_previas": 1},
+    "Jamal Musiala": {"posicion": "Mediocampista", "edad": 21, "equipo": "Bayern Munich", "intensidad_base": 83, "propension_tarjetas": "Baja", "lesiones_previas": 1},
 }
 
 def inicializar_jugadores():
@@ -405,11 +498,13 @@ def inicializar_jugadores():
 # ============================================================
 st.markdown("""
 <style>
-    .main-header { font-size: 2rem; font-weight: bold; text-align: center; color: #00C9FF; }
+    .main-header { font-size: 2.5rem; font-weight: bold; text-align: center; background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .risk-low { background-color: #e8f5e9; padding: 10px; border-radius: 10px; border-left: 4px solid #4caf50; margin: 5px 0; }
     .risk-moderate { background-color: #fff3e0; padding: 10px; border-radius: 10px; border-left: 4px solid #ff9800; margin: 5px 0; }
     .risk-high { background-color: #ffebee; padding: 10px; border-radius: 10px; border-left: 4px solid #f44336; margin: 5px 0; }
     .risk-critical { background-color: #ffcdd2; padding: 10px; border-radius: 10px; border-left: 4px solid #d32f2f; margin: 5px 0; }
+    .card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 15px; color: white; text-align: center; }
+    .logo-container { display: flex; justify-content: center; align-items: center; gap: 10px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -417,7 +512,7 @@ st.markdown("""
 # INTERFAZ PRINCIPAL
 # ============================================================
 st.markdown('<div class="main-header">⚽ A.R.E.S. - El Cerebro del Fútbol ⚽</div>', unsafe_allow_html=True)
-st.markdown('<p style="text-align: center">Advanced Real-time Evaluation System</p>', unsafe_allow_html=True)
+st.markdown('<p style="text-align: center">Advanced Real-time Evaluation System | Análisis Predictivo + Fatiga + Tarjetas + Formaciones</p>', unsafe_allow_html=True)
 st.divider()
 
 # Inicializar jugadores
@@ -465,6 +560,12 @@ with st.sidebar:
         st.rerun()
     
     st.divider()
+    
+    if API_KEY and API_KEY != "None":
+        st.success("✅ API configurada")
+    else:
+        st.info("📊 Usando datos simulados")
+    
     st.caption(f"📦 {len(JUGADORES)} jugadores en catálogo")
 
 # Obtener predicción
@@ -474,53 +575,100 @@ guardar_prediccion(prediccion)
 # ============================================================
 # TABS
 # ============================================================
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Análisis del Partido", "🩺 Fatiga + Tarjetas", "⚙️ Formaciones", "📜 Historial"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Análisis del Partido", "🩺 Fatiga + Tarjetas", "⚽ Formación Táctica", "📜 Historial", "🏆 Champions League"])
 
 # ============================================================
-# TAB 1: ANÁLISIS DEL PARTIDO
+# TAB 1: ANÁLISIS DEL PARTIDO (COMPLETO CON LOGOS)
 # ============================================================
 with tab1:
-    col_local, col_vs, col_visit = st.columns([2, 1, 2])
+    # Mostrar logos y equipos
+    st.markdown(f"""
+    <div style="display: flex; justify-content: space-around; align-items: center; text-align: center;">
+        <div>
+            {mostrar_logo_html(local)}
+            <h2>{local}</h2>
+        </div>
+        <div>
+            <h1 style="font-size: 3rem;">VS</h1>
+            <h3>Empate: {prediccion['prob_empate']}%</h3>
+        </div>
+        <div>
+            {mostrar_logo_html(visitante)}
+            <h2>{visitante}</h2>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.divider()
+    
+    col_local, col_visit = st.columns(2)
     
     with col_local:
         st.markdown(f"### 🏠 {local}")
-        m1, m2 = st.columns(2)
+        m1, m2, m3 = st.columns(3)
         with m1:
-            st.metric("🎯 Probabilidad Victoria", f"{prediccion['prob_local']}%")
+            st.metric("🎯 Probabilidad", f"{prediccion['prob_local']}%", delta="Favorito" if prediccion['prob_local'] > 50 else "Underdog")
             st.metric("⚽ xG Esperado", prediccion['xG_local'])
         with m2:
             st.metric("📊 Forma", prediccion['forma_local'])
             st.metric("💪 Posesión", f"{prediccion['posesion_local']}%")
-    
-    with col_vs:
-        st.markdown("### 🤝 VS")
-        st.markdown(f"### Empate: {prediccion['prob_empate']}%")
-        fig = go.Figure(data=[go.Pie(
-            labels=[local, "Empate", visitante],
-            values=[prediccion['prob_local'], prediccion['prob_empate'], prediccion['prob_visitante']],
-            hole=0.4,
-            marker_colors=['#00C9FF', '#FFD700', '#FF6B6B']
-        )])
-        fig.update_layout(height=300, margin=dict(l=0, r=0, t=0, b=0))
-        st.plotly_chart(fig, use_container_width=True)
+        with m3:
+            st.metric("⚡ Fuerza", f"{prediccion['fuerza_local']}")
+            st.metric("🎯 Goles", f"{prediccion['goles_favor_local']} (F) / {prediccion['goles_contra_local']} (C)")
     
     with col_visit:
         st.markdown(f"### ✈️ {visitante}")
-        m1, m2 = st.columns(2)
+        m1, m2, m3 = st.columns(3)
         with m1:
-            st.metric("🎯 Probabilidad Victoria", f"{prediccion['prob_visitante']}%")
+            st.metric("🎯 Probabilidad", f"{prediccion['prob_visitante']}%")
             st.metric("⚽ xG Esperado", prediccion['xG_visitante'])
         with m2:
             st.metric("📊 Forma", prediccion['forma_visitante'])
             st.metric("💪 Posesión", f"{prediccion['posesion_visitante']}%")
+        with m3:
+            st.metric("⚡ Fuerza", f"{prediccion['fuerza_visitante']}")
+            st.metric("🎯 Goles", f"{prediccion['goles_favor_visitante']} (F) / {prediccion['goles_contra_visitante']} (C)")
     
+    # Gráfico de probabilidades
     st.divider()
-    st.subheader("⚡ SEÑALES DE ACCIÓN")
+    fig = go.Figure(data=[go.Pie(
+        labels=[local, "Empate", visitante],
+        values=[prediccion['prob_local'], prediccion['prob_empate'], prediccion['prob_visitante']],
+        hole=0.4,
+        marker_colors=['#00C9FF', '#FFD700', '#FF6B6B']
+    )])
+    fig.update_layout(height=400, title="Distribución de Probabilidades", margin=dict(l=0, r=0, t=40, b=0))
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Confluencia de Victoria
+    st.divider()
+    st.subheader("⚡ SEÑALES DE ACCIÓN - CONFLUENCIA DE VICTORIA")
+    
+    if prediccion['confluencia']['activada']:
+        st.success(f"✅ CONFLUENCIA ACTIVADA - {len(prediccion['confluencia']['factores'])} señales detectadas")
+    else:
+        st.info("⚠️ Confluencia no activada - Partido equilibrado")
+    
     for factor in prediccion['confluencia']['factores']:
         st.success(factor)
-    st.info(f"💡 {prediccion['confluencia']['sugerencia']}")
     
-    if st.button("📄 Generar PDF", use_container_width=True):
+    st.info(f"💡 **Recomendación táctica:** {prediccion['confluencia']['sugerencia']}")
+    
+    # Recomendación para inversores
+    st.divider()
+    st.subheader("💰 RECOMENDACIÓN PARA INVERSORES")
+    
+    if "FUERTE FAVORITO" in prediccion['recomendacion']:
+        st.success(f"### ✅ {prediccion['recomendacion']}")
+    elif "FAVORITO" in prediccion['recomendacion']:
+        st.info(f"### 📈 {prediccion['recomendacion']}")
+    elif "SORPRESA" in prediccion['recomendacion']:
+        st.warning(f"### ⚠️ {prediccion['recomendacion']}")
+    else:
+        st.info(f"### 📊 {prediccion['recomendacion']}")
+    
+    # PDF
+    if st.button("📄 Generar Informe PDF", use_container_width=True):
         pdf = generar_pdf_informe(prediccion)
         st.download_button("📥 Descargar PDF", pdf, file_name=f"ARES_{local}_vs_{visitante}.pdf", mime="application/pdf")
 
@@ -528,7 +676,7 @@ with tab1:
 # TAB 2: FATIGA + TARJETAS
 # ============================================================
 with tab2:
-    st.subheader("🩺 Monitor de Fatiga")
+    st.subheader("🩺 Monitor de Fatiga y Riesgo Disciplinario")
     
     jugadores_lista = list(JUGADORES.keys())
     jugador_seleccionado = st.selectbox("🎽 Seleccionar Jugador", jugadores_lista)
@@ -545,55 +693,159 @@ with tab2:
         }
         posicion_enum = posicion_map.get(datos["posicion"], Posicion.DELANTERO)
         
-        minutos_7dias = st.slider("Minutos últimos 7 días", 0, 630, 300)
-        minutos_72h = st.slider("Minutos últimas 72h", 0, 270, 150)
-        intensidad = st.slider("Intensidad media", 0, 100, datos.get("intensidad_base", 80))
+        col_f1, col_f2 = st.columns(2)
+        
+        with col_f1:
+            st.markdown("#### 📊 Carga de Partidos")
+            minutos_7dias = st.slider("Minutos últimos 7 días", 0, 630, 300)
+            minutos_72h = st.slider("Minutos últimas 72 horas", 0, 270, 150)
+            intensidad = st.slider("Intensidad media (0-100)", 0, 100, datos.get("intensidad_base", 80))
+        
+        with col_f2:
+            st.markdown("#### 🏃‍♂️ Métricas del Jugador")
+            sprints = st.slider("Sprints por partido", 0, 50, 25)
+            lesiones = st.number_input("Lesiones previas (2 temporadas)", 0, 10, datos.get("lesiones_previas", 1))
+            descanso = st.slider("Días desde último partido", 0, 14, 3)
         
         jugador = EstadisticasJugador(
             nombre=jugador_seleccionado, posicion=posicion_enum, edad=datos["edad"],
             min7=minutos_7dias, min72=minutos_72h, intensidad=intensidad,
-            distancia=10.5, lesiones=datos.get("lesiones_previas", 1), sprints=25, descanso=3
+            distancia=10.5, lesiones=lesiones, sprints=sprints, descanso=descanso
         )
         
         riesgo_fatiga = fatiga.calcular_riesgo_fatiga(jugador)
         riesgo_amarilla = sistema_tarjetas.predecir_tarjeta_amarilla(jugador, minutos_7dias, intensidad, datos.get("propension_tarjetas", "Media"))
+        riesgo_roja = sistema_tarjetas.predecir_tarjeta_roja(jugador, datos.get("propension_tarjetas", "Media"))
         
-        col_r1, col_r2 = st.columns(2)
+        st.divider()
+        st.markdown("### 📊 Resultados del Análisis")
+        
+        col_r1, col_r2, col_r3 = st.columns(3)
+        
         with col_r1:
-            st.metric("Probabilidad Lesión", f"{riesgo_fatiga['probabilidad']}%")
+            st.markdown("#### 🩺 FATIGA")
+            if riesgo_fatiga['probabilidad'] < 30:
+                st.success(f"**Nivel:** {riesgo_fatiga['nivel'].value} 🟢")
+            elif riesgo_fatiga['probabilidad'] < 60:
+                st.warning(f"**Nivel:** {riesgo_fatiga['nivel'].value} 🟡")
+            else:
+                st.error(f"**Nivel:** {riesgo_fatiga['nivel'].value} 🔴")
+            st.metric("Probabilidad de Lesión", f"{riesgo_fatiga['probabilidad']}%")
             st.progress(riesgo_fatiga['probabilidad'] / 100)
-            st.caption(riesgo_fatiga['sugerencia'])
+            st.caption(f"💡 {riesgo_fatiga['sugerencia']}")
+        
         with col_r2:
-            st.metric("Probabilidad Tarjeta Amarilla", f"{riesgo_amarilla['probabilidad']}%")
-            st.caption(riesgo_amarilla['sugerencia'])
+            st.markdown("#### 🟨 TARJETA AMARILLA")
+            st.metric("Probabilidad", f"{riesgo_amarilla['probabilidad']}%")
+            st.caption(f"Nivel: {riesgo_amarilla['nivel']}")
+            st.caption(f"💡 {riesgo_amarilla['sugerencia']}")
+        
+        with col_r3:
+            st.markdown("#### 🟥 TARJETA ROJA")
+            st.metric("Probabilidad", f"{riesgo_roja['probabilidad']}%")
+            st.caption(f"Nivel: {riesgo_roja['nivel']}")
+            st.caption(f"💡 {riesgo_roja['sugerencia']}")
+        
+        if riesgo_fatiga['probabilidad'] > 65:
+            st.error("🚨 **ALERTA CRÍTICA:** ¡Sustitución recomendada de inmediato!")
+        elif riesgo_fatiga['probabilidad'] > 45:
+            st.warning("⚠️ **ALERTA:** Preparar sustituto para los próximos minutos")
 
 # ============================================================
-# TAB 3: FORMACIONES
+# TAB 3: FORMACIÓN TÁCTICA (COMPLETA)
 # ============================================================
 with tab3:
-    st.subheader("⚙️ Recomendación de Formación")
+    st.subheader("⚽ Recomendación de Formación Táctica")
     
     formacion_recomendada = recomendar_formacion(local, visitante)
     formacion_data = FORMACIONES[formacion_recomendada]
     
-    st.markdown(f"### Formación recomendada: {formacion_recomendada}")
-    st.markdown(f"**{formacion_data['descripcion']}**")
-    st.info(f"💡 {formacion_data['recomendacion']}")
+    col_f1, col_f2 = st.columns(2)
+    
+    with col_f1:
+        st.markdown(f"### Formación recomendada: **{formacion_recomendada}**")
+        st.markdown(f"**📝 Descripción:** {formacion_data['descripcion']}")
+        st.markdown(f"**✅ Fortaleza:** {formacion_data['fortaleza']}")
+        st.markdown(f"**⚠️ Debilidad:** {formacion_data['debilidad']}")
+        st.info(f"💡 **Recomendación táctica:** {formacion_data['recomendacion']}")
+    
+    with col_f2:
+        st.markdown("### Diagrama de posiciones")
+        st.code(formacion_data['diagrama'], language="text")
+    
+    st.divider()
+    st.markdown("### Otras formaciones disponibles")
+    
+    for formacion, info in FORMACIONES.items():
+        if formacion != formacion_recomendada:
+            with st.expander(f"📋 {formacion} - {info['fortaleza']}"):
+                st.write(f"**Descripción:** {info['descripcion']}")
+                st.write(f"**Recomendado:** {info['recomendacion']}")
+                st.code(info['diagrama'], language="text")
 
 # ============================================================
 # TAB 4: HISTORIAL
 # ============================================================
 with tab4:
     st.subheader("📜 Historial de Predicciones")
+    
     historial = cargar_historial()
+    
     if historial:
+        st.metric("Total Predicciones", len(historial))
         df = pd.DataFrame(historial[::-1])
-        st.dataframe(df[["fecha", "local", "visitante", "prob_local", "prob_visitante"]], use_container_width=True)
+        columnas = ["fecha", "local", "visitante", "prob_local", "prob_visitante"]
+        st.dataframe(df[columnas], use_container_width=True)
+        
+        if st.button("🗑️ Limpiar Historial", use_container_width=True):
+            if os.path.exists(HISTORIAL_FILE):
+                os.remove(HISTORIAL_FILE)
+            st.success("Historial limpiado correctamente")
+            st.rerun()
     else:
-        st.info("No hay predicciones guardadas")
+        st.info("No hay predicciones guardadas. Analiza algunos partidos para ver el historial.")
+
+# ============================================================
+# TAB 5: CHAMPIONS LEAGUE
+# ============================================================
+with tab5:
+    st.subheader("🏆 Predicciones Champions League")
+    
+    favoritos = [
+        ("Real Madrid", 92, "Excelente 🔥"),
+        ("Manchester City", 89, "Excelente 🔥"),
+        ("Bayern Munich", 87, "Excelente 🔥"),
+        ("Barcelona", 84, "Buena 📈"),
+        ("Liverpool", 82, "Buena 📈"),
+        ("Paris Saint-Germain", 80, "Buena 📈"),
+    ]
+    
+    cols = st.columns(3)
+    for i, (equipo, puntos, forma) in enumerate(favoritos[:3]):
+        with cols[i]:
+            st.markdown(mostrar_logo_html(equipo), unsafe_allow_html=True)
+            st.markdown(f"### {equipo}")
+            st.metric("Puntuación", f"{puntos} pts")
+            st.caption(f"Forma: {forma}")
+    
+    st.divider()
+    st.subheader("📊 Simulación de Cuartos de Final")
+    
+    cuartos = [
+        ("Real Madrid", "Bayern Munich", 52, 48),
+        ("Manchester City", "Barcelona", 55, 45),
+        ("Liverpool", "Paris Saint-Germain", 51, 49),
+        ("Inter Milan", "Borussia Dortmund", 53, 47)
+    ]
+    
+    for local_q, visit_q, prob_l, prob_v in cuartos:
+        st.write(f"**{local_q}** {prob_l}% vs {prob_v}% **{visit_q}**")
+        st.progress(prob_l / 100)
+    
+    st.info("📊 Basado en datos históricos, forma reciente y poder ofensivo/defensivo")
 
 # ============================================================
 # FOOTER
 # ============================================================
 st.divider()
-st.caption(f"🕒 A.R.E.S. - Actualizado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+st.caption(f"🕒 A.R.E.S. - Advanced Real-time Evaluation System | Actualizado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | {liga_seleccionada}")
