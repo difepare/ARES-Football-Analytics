@@ -323,6 +323,7 @@ class SistemaTarjetas:
 sistema_tarjetas = SistemaTarjetas()
 
 # ============================================================
+# ============================================================
 # PREDICCIÓN DE PARTIDOS
 # ============================================================
 def predecir_partido(local, visitante):
@@ -347,25 +348,25 @@ def predecir_partido(local, visitante):
     data_visit = equipos_data.get(visitante, {"fuerza": 75, "posesion": 48, "xG": 1.4, "forma": "Regular 📊", "goles_favor": 1.4, "goles_contra": 1.3})
     
     total = data_local["fuerza"] + data_visit["fuerza"]
-prob_local = (data_local["fuerza"] / total) * 0.7
-prob_visit = (data_visit["fuerza"] / total) * 0.7
-prob_empate = 1 - prob_local - prob_visit
+    prob_local = (data_local["fuerza"] / total) * 0.7
+    prob_visit = (data_visit["fuerza"] / total) * 0.7
+    prob_empate = 1 - prob_local - prob_visit
 
-# Ajustar para que ninguna probabilidad sea cero
-if prob_empate < 0.15:
-    prob_empate = 0.15
-    prob_local = prob_local * (1 - prob_empate) / (prob_local + prob_visit)
-    prob_visit = prob_visit * (1 - prob_empate) / (prob_local + prob_visit)
+    # Ajustar para que ninguna probabilidad sea cero
+    if prob_empate < 0.15:
+        prob_empate = 0.15
+        prob_local = prob_local * (1 - prob_empate) / (prob_local + prob_visit)
+        prob_visit = prob_visit * (1 - prob_empate) / (prob_local + prob_visit)
 
-if prob_local < 0.15:
-    prob_local = 0.15
-    prob_empate = prob_empate * (1 - prob_local) / (prob_empate + prob_visit)
-    prob_visit = prob_visit * (1 - prob_local) / (prob_empate + prob_visit)
+    if prob_local < 0.15:
+        prob_local = 0.15
+        prob_empate = prob_empate * (1 - prob_local) / (prob_empate + prob_visit)
+        prob_visit = prob_visit * (1 - prob_local) / (prob_empate + prob_visit)
 
-if  prob_visit < 0.15:
-    prob_visit = 0.15
-    prob_empate = prob_empate * (1 - prob_visit) / (prob_empate + prob_local)
-    prob_local = prob_local * (1 - prob_visit) / (prob_empate + prob_local)
+    if prob_visit < 0.15:
+        prob_visit = 0.15
+        prob_empate = prob_empate * (1 - prob_visit) / (prob_empate + prob_local)
+        prob_local = prob_local * (1 - prob_visit) / (prob_empate + prob_local)
     
     # Calcular xG ajustado
     xG_local = data_local["xG"] * (1 + (prob_local - 0.33) * 0.5)
@@ -402,16 +403,23 @@ if  prob_visit < 0.15:
         recomendacion = "🤔 PARTIDO EQUILIBRADO - Mejor opción: over 1.5 goles"
     
     return {
-        'equipo_local': local, 'equipo_visitante': visitante,
-        'xG_local': round(xG_local, 2), 'xG_visitante': round(xG_visitante, 2),
+        'equipo_local': local,
+        'equipo_visitante': visitante,
+        'xG_local': round(xG_local, 2),
+        'xG_visitante': round(xG_visitante, 2),
         'prob_local': round(prob_local * 100, 1),
         'prob_empate': round(prob_empate * 100, 1),
         'prob_visitante': round(prob_visit * 100, 1),
-        'forma_local': data_local["forma"], 'forma_visitante': data_visit["forma"],
-        'posesion_local': data_local["posesion"], 'posesion_visitante': data_visit["posesion"],
-        'goles_favor_local': data_local["goles_favor"], 'goles_contra_local': data_local["goles_contra"],
-        'goles_favor_visitante': data_visit["goles_favor"], 'goles_contra_visitante': data_visit["goles_contra"],
-        'fuerza_local': data_local["fuerza"], 'fuerza_visitante': data_visit["fuerza"],
+        'forma_local': data_local["forma"],
+        'forma_visitante': data_visit["forma"],
+        'posesion_local': data_local["posesion"],
+        'posesion_visitante': data_visit["posesion"],
+        'goles_favor_local': data_local["goles_favor"],
+        'goles_contra_local': data_local["goles_contra"],
+        'goles_favor_visitante': data_visit["goles_favor"],
+        'goles_contra_visitante': data_visit["goles_contra"],
+        'fuerza_local': data_local["fuerza"],
+        'fuerza_visitante': data_visit["fuerza"],
         'confluencia': {'activada': confluencia_activada, 'factores': factores, 'sugerencia': sugerencia_confluencia},
         'recomendacion': recomendacion,
         'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -912,7 +920,7 @@ def obtener_cuotas_simuladas(local, visitante, prediccion):
     
     # 👇 AGREGAR ESTAS DOS LÍNEAS JUSTO AQUÍ 👇
     # Asegurar cuota mínima de 1.01 para evitar cuotas 0.00
-    cuota_justa_empate = max(cuota_justa_empate, 1.01)
+    cuota_justa_empate = max(cuota_justa_empate, 2.50)
 
     # Aplicar margen de casa típico (~6-8%)
     margen = 0.92
