@@ -870,9 +870,9 @@ def calcular_valor_apuesta(probabilidad_ares, cuota_real):
 
 def recomendar_apuesta(valor, cuota, equipo, mercado):
     if valor > 0.10:
-        return f"🔥 **OPORTUNIDAD EXCELENTE** - Valor del {valor*100:.1f}% | {equipo} a {cuota:.2f} en {mercado}"
+        return f"🔥 **OPORTUNIDAD EXCELENTE** - Valor del {valor*100:.1f}% | {equipo} a {cuota:.2f}"
     elif valor > 0.05:
-        return f"✅ **OPORTUNIDAD** - Valor del {valor*100:.1f}% | {equipo} a {cuota:.2f} en {mercado}"
+        return f"✅ **OPORTUNIDAD** - Valor del {valor*100:.1f}% | {equipo} a {cuota:.2f}"
     elif valor > 0:
         return f"📊 **VALOR JUSTO** - Sin ventaja clara | {equipo} a {cuota:.2f}"
     else:
@@ -894,6 +894,10 @@ def obtener_cuotas_simuladas(local, visitante, prediccion):
     cuota_justa_empate = 1 / prob_empate if prob_empate > 0 else 0
     cuota_justa_visitante = 1 / prob_visitante if prob_visitante > 0 else 0
     
+    # 👇 AGREGAR ESTAS DOS LÍNEAS JUSTO AQUÍ 👇
+    # Asegurar cuota mínima de 1.01 para evitar cuotas 0.00
+    cuota_justa_empate = max(cuota_justa_empate, 1.01)
+
     # Aplicar margen de casa típico (~6-8%)
     margen = 0.92
     cuota_real_local = round(cuota_justa_local * margen, 2)
