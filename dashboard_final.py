@@ -347,9 +347,25 @@ def predecir_partido(local, visitante):
     data_visit = equipos_data.get(visitante, {"fuerza": 75, "posesion": 48, "xG": 1.4, "forma": "Regular 📊", "goles_favor": 1.4, "goles_contra": 1.3})
     
     total = data_local["fuerza"] + data_visit["fuerza"]
-    prob_local = (data_local["fuerza"] / total) * 0.7 + 0.15
-    prob_visit = (data_visit["fuerza"] / total) * 0.7 + 0.15
-    prob_empate = 1 - prob_local - prob_visit
+prob_local = (data_local["fuerza"] / total) * 0.7
+prob_visit = (data_visit["fuerza"] / total) * 0.7
+prob_empate = 1 - prob_local - prob_visit
+
+# Ajustar para que ninguna probabilidad sea cero
+if prob_empate < 0.15:
+    prob_empate = 0.15
+    prob_local = prob_local * (1 - prob_empate) / (prob_local + prob_visit)
+    prob_visit = prob_visit * (1 - prob_empate) / (prob_local + prob_visit)
+
+if prob_local < 0.15:
+    prob_local = 0.15
+    prob_empate = prob_empate * (1 - prob_local) / (prob_empate + prob_visit)
+    prob_visit = prob_visit * (1 - prob_local) / (prob_empate + prob_visit)
+
+if  prob_visit < 0.15:
+    prob_visit = 0.15
+    prob_empate = prob_empate * (1 - prob_visit) / (prob_empate + prob_local)
+    prob_local = prob_local * (1 - prob_visit) / (prob_empate + prob_local)
     
     # Calcular xG ajustado
     xG_local = data_local["xG"] * (1 + (prob_local - 0.33) * 0.5)
