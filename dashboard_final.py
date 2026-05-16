@@ -575,7 +575,7 @@ guardar_prediccion(prediccion)
 # ============================================================
 # TABS
 # ============================================================
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Análisis del Partido", "🩺 Fatiga + Tarjetas", "⚽ Formación Táctica", "📜 Historial", "🏆 Champions League"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📊 Análisis", "🩺 Fatiga", "⚽ Formación", "📜 Historial", "🏆 Champions", "💰 Valor de Apuesta"])
 
 # ============================================================
 # TAB 1: ANÁLISIS DEL PARTIDO (COMPLETO CON LOGOS)
@@ -854,3 +854,134 @@ else:
     st.info("📊 **MODO DEMO** - Datos simulados")
 st.divider()
 st.caption(f"🕒 A.R.E.S. - Advanced Real-time Evaluation System | Actualizado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | {liga_seleccionada}")
+
+# ============================================================
+# NUEVA PESTAÑA: COMPARADOR DE CUOTAS Y VALOR
+# ============================================================
+
+def calcular_valor_apuesta(probabilidad_ares, cuota_real):
+    """
+    Calcula si una apuesta tiene valor positivo.
+    Fórmula: Valor = (Probabilidad_ARES * Cuota_Real) - 1
+    Si Valor > 0.05 → hay oportunidad (5% de ventaja)
+    """
+    valor = (probabilidad_ares / 100) * cuota_real - 1
+    return valor
+
+def recomendar_apuesta(valor, cuota, equipo, mercado):
+    if valor > 0.10:
+        return f"🔥 **OPORTUNIDAD EXCELENTE** - Valor del {valor*100:.1f}% | {equipo} a {cuota:.2f} en {mercado}"
+    elif valor > 0.05:
+        return f"✅ **OPORTUNIDAD** - Valor del {valor*100:.1f}% | {equipo} a {cuota:.2f} en {mercado}"
+    elif valor > 0:
+        return f"📊 **VALOR JUSTO** - Sin ventaja clara | {equipo} a {cuota:.2f}"
+    else:
+        return f"❌ **SIN VALOR** - Evitar apuesta | {equipo} a {cuota:.2f}"
+
+# Simulación de cuotas reales (basadas en fuerza de equipo)
+def obtener_cuotas_simuladas(local, visitante, prediccion):
+    """
+    Genera cuotas simuladas realistas basadas en la predicción.
+    En el futuro, se puede conectar a API de apuestas (Bet365, etc.)
+    """
+    # Cuota base por probabilidad
+    prob_local = prediccion['prob_local'] / 100
+    prob_empate = prediccion['prob_empate'] / 100
+    prob_visitante = prediccion['prob_visitante'] / 100
+    
+    # Modelo de cuotas justas (sin margen de casa)
+    cuota_justa_local = 1 / prob_local if prob_local > 0 else 0
+    cuota_justa_empate = 1 / prob_empate if prob_empate > 0 else 0
+    cuota_justa_visitante = 1 / prob_visitante if prob_visitante > 0 else 0
+    
+    # Aplicar margen de casa típico (~6-8%)
+    margen = 0.92
+    cuota_real_local = round(cuota_justa_local * margen, 2)
+    cuota_real_empate = round(cuota_justa_empate * margen, 2)
+    cuota_real_visitante = round(cuota_justa_visitante * margen, 2)
+    
+    return {
+        "local": cuota_real_local,
+        "empate": cuota_real_empate,
+        "visitante": cuota_real_visitante
+    }
+
+# ============================================================
+# AGREGAR NUEVA PESTAÑA AL DASHBOARD
+# ============================================================
+# Busca esta línea: tab1, tab2, tab3, tab4, tab5 = st.tabs([...])
+# Y reemplázala por:
+# tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📊 Análisis", "🩺 Fatiga", "⚽ Formación", "📜 Historial", "🏆 Champions", "💰 Valor de Apuesta"])
+
+# Luego, agrega este bloque completo al final de los tabs:
+
+with tab6:
+    st.subheader("💰 Análisis de Valor de Apuesta")
+    st.markdown("Compara la predicción de A.R.E.S. con las cuotas del mercado para identificar oportunidades")
+    
+    # Obtener cuotas simuladas
+    cuotas = obtener_cuotas_simuladas(local, visitante, prediccion)
+    
+    # Mostrar tabla comparativa
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown(f"### 🏠 {local}")
+        st.metric("Probabilidad A.R.E.S.", f"{prediccion['prob_local']}%")
+        st.metric("Cuota de Mercado", f"{cuotas['local']:.2f}")
+        valor_local = calcular_valor_apuesta(prediccion['prob_local'], cuotas['local'])
+        st.metric("Valor Esperado", f"{valor_local*100:.1f}%", delta="Positivo" if valor_local > 0 else "Negativo")
+        st.info(recomendar_apuesta(valor_local, cuotas['local'], local, "Victoria Local"))
+    
+    with col2:
+        st.markdown(f"### 🤝 Empate")
+        st.metric("Probabilidad A.R.E.S.", f"{prediccion['prob_empate']}%")
+        st.metric("Cuota de Mercado", f"{cuotas['empate']:.2f}")
+        valor_empate = calcular_valor_apuesta(prediccion['prob_empate'], cuotas['empate'])
+        st.metric("Valor Esperado", f"{valor_empate*100:.1f}%", delta="Positivo" if valor_empate > 0 else "Negativo")
+        st.info(recomendar_apuesta(valor_empate, cuotas['empate'], "Empate", "Empate"))
+    
+    with col3:
+        st.markdown(f"### ✈️ {visitante}")
+        st.metric("Probabilidad A.R.E.S.", f"{prediccion['prob_visitante']}%")
+        st.metric("Cuota de Mercado", f"{cuotas['visitante']:.2f}")
+        valor_visitante = calcular_valor_apuesta(prediccion['prob_visitante'], cuotas['visitante'])
+        st.metric("Valor Esperado", f"{valor_visitante*100:.1f}%", delta="Positivo" if valor_visitante > 0 else "Negativo")
+        st.info(recomendar_apuesta(valor_visitante, cuotas['visitante'], visitante, "Victoria Visitante"))
+    
+    st.divider()
+    
+    # Recomendación general
+    st.subheader("🎯 Recomendación para Inversores")
+    
+    valores = [valor_local, valor_empate, valor_visitante]
+    mejores_indices = [i for i, v in enumerate(valores) if v == max(valores)]
+    
+    if max(valores) > 0.05:
+        if 0 in mejores_indices:
+            st.success(f"### ✅ OPORTUNIDAD DETECTADA: Victoria de {local} a {cuotas['local']:.2f}")
+            st.write(f"**Valor esperado:** {max(valores)*100:.1f}% de ventaja sobre la casa")
+            st.write("**Recomendación:** Apostar 1-2% del bankroll")
+        elif 1 in mejores_indices:
+            st.success(f"### ✅ OPORTUNIDAD DETECTADA: Empate a {cuotas['empate']:.2f}")
+            st.write(f"**Valor esperado:** {max(valores)*100:.1f}% de ventaja sobre la casa")
+            st.write("**Recomendación:** Apostar 1-2% del bankroll")
+        else:
+            st.success(f"### ✅ OPORTUNIDAD DETECTADA: Victoria de {visitante} a {cuotas['visitante']:.2f}")
+            st.write(f"**Valor esperado:** {max(valores)*100:.1f}% de ventaja sobre la casa")
+            st.write("**Recomendación:** Apostar 1-2% del bankroll")
+    else:
+        st.info("### 📊 Sin oportunidades claras")
+        st.write("El mercado está eficientemente valorado. Esperar a mejores spots.")
+    
+    # Explicación para inversores
+    with st.expander("📖 ¿Cómo interpretar el Valor Esperado?"):
+        st.markdown("""
+        - **Valor Esperado > +5%** → Oportunidad de apuesta. La casa ha sobrevalorado esta opción.
+        - **Valor Esperado entre -5% y +5%** → Mercado justo. Sin ventaja clara.
+        - **Valor Esperado < -5%** → Mala apuesta. La casa infravalora esta opción.
+        
+        **Fórmula:** Valor = (Probabilidad_ARES × Cuota_Mercado) - 1
+        
+        *Las cuotas mostradas son simuladas. En producción se integrará API real de Bet365.*
+        """)
